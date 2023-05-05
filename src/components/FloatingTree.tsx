@@ -1,21 +1,28 @@
-import { useState, useLayoutEffect } from 'react'
-import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useHover,
-  useFocus,
-  useDismiss,
-  useRole,
-  useInteractions,
-  FloatingPortal,
-  safePolygon
-} from "@floating-ui/react";
-import { setRequestMeta } from 'next/dist/server/request-meta';
+import { FloatingNode, FloatingPortal, autoUpdate, flip, offset, shift, useDismiss, useFloating, useFloatingNodeId, useFocus, useHover, useInteractions, useRole, FloatingTree } from '@floating-ui/react';
+import React, { useState } from 'react'
 
-const BasisToolTip = () => {
+const FloatingTreeComp = () => {
+  return (
+    <FloatingTree>
+      <Popover
+        render={() => (
+          <Popover render={() => 'Nested Popover'}>
+            <button>Child</button>
+          </Popover>
+        )}
+      >
+        <button>Root</button>
+      </Popover>
+    </FloatingTree>
+  )
+}
+
+export default FloatingTreeComp
+function Popover({ children }) {
+  // Subscribe this component to the <FloatingTree />
+  const nodeId = useFloatingNodeId();
+
+  // Pass the subscribed `nodeId` to useFloating()
   const [isOpen, setIsOpen] = useState(false);
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
@@ -29,7 +36,8 @@ const BasisToolTip = () => {
         fallbackAxisSideDirection: "start",
       }),
       shift()
-    ]
+    ],
+    nodeId
   })
 
   // event listeners to change the open state
@@ -73,23 +81,14 @@ const BasisToolTip = () => {
     dismiss,
     role,
   ])
-  console.log(getFloatingProps());
-  return (
-    <div>
-      <button ref={refs.setReference} {...getReferenceProps()}>Hover or focus me</button>
-      <FloatingPortal>
-        {isOpen && (
-          <div className='tooltip'
-            ref={refs.setFloating}
-            style={floatingStyles}
-            {...getFloatingProps()}
-          >
-            I'm a tooltip!
-          </div>
-        )}
-      </FloatingPortal>
-    </div>
-  )
-}
 
-export default BasisToolTip
+  // Wrap the rendered element(s) in a `<FloatingNode />`,
+  // passing in the subscribed `nodeId`
+  return (
+    <FloatingNode id={nodeId}>
+      <FloatingPortal>
+        {isOpen && /* floating element */}
+      </FloatingPortal>
+    </FloatingNode>
+  );
+}
