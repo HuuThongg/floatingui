@@ -109,7 +109,7 @@ const EmojiPicker = () => {
   const [placement, setPlacement] = useState<Placement | null>(null)
 
   const listRef = useRef<HTMLDivElement[] | null>([]);
-  const arrowRef = useRef<HTMLDivElement>(null);
+  const arrowRef = useRef<SVGSVGElement>(null);
   const noResultsId = useId();
   const buttonId = useId();
   const listboxId = useId();

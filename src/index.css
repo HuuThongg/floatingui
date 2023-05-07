@@ -119,3 +119,15 @@ body {
 .MenuItem:not([disabled]):active {
   background: #d7dce5;
 }
+.Dialog-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  display: grid;
+  place-items: center;
+}
+
+.Dialog {
+  margin: 15px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 4px;
+}
